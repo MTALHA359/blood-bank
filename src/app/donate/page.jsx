@@ -1,5 +1,7 @@
+
 "use client";
-import React, { useState } from 'react';
+// pages/donate.js
+import { useState } from 'react';
 import { Heart, MapPin, Phone, Mail, Calendar, User, Droplet, Clock, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export default function BloodDonatePage() {
@@ -53,6 +55,7 @@ export default function BloodDonatePage() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
   const medicalConditionsList = [
@@ -127,12 +130,29 @@ export default function BloodDonatePage() {
     if (!validateStep(4)) return;
     
     setIsSubmitting(true);
+    setSubmitError('');
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/donations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setSubmitted(true);
+      } else {
+        setSubmitError(data.error || 'Failed to submit donation');
+      }
+    } catch (error) {
+      setSubmitError('Network error. Please try again.');
+    } finally {
       setIsSubmitting(false);
-      setSubmitted(true);
-    }, 2000);
+    }
   };
 
   if (submitted) {
@@ -556,7 +576,7 @@ export default function BloodDonatePage() {
               placeholder="+1 (555) 987-6543"
             />
             {errors.emergencyPhone && <p className="text-red-500 text-sm mt-1">{errors.emergencyPhone}</p>}
-          </div>
+        </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -836,6 +856,12 @@ export default function BloodDonatePage() {
 
         {/* Form */}
         <div className="bg-white rounded-2xl shadow-2xl p-8">
+          {submitError && (
+            <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-xl">
+              {submitError}
+            </div>
+          )}
+          
           <form onSubmit={handleSubmit}>
             {currentStep === 1 && renderStep1()}
             {currentStep === 2 && renderStep2()}
