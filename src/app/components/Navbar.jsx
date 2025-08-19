@@ -33,12 +33,12 @@ export default function BloodBankNavbar() {
   }, []);
 
   const navigationItems = [
-    { name: 'Home', href: '#home', active: true },
-    { name: 'Find Blood', href: '#find-blood' },
-    { name: 'Donate', href: '#donate' },
-    { name: 'Blood Drives', href: '#events' },
-    { name: 'About', href: '#about' },
-    { name: 'Contact', href: '#contact' }
+    { name: 'Home', href: '/', active: true },
+    { name: 'Find Blood', href: '/find-blood' },
+    { name: 'Donate', href: '/donate' },
+    { name: 'Blood Drives', href: '/events' },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' }
   ];
 
   const locations = [
